@@ -335,7 +335,21 @@ function LandingPage() {
         }
     }, [filled, player, gridSize, winner, aiBotEnabled, cookieConsent]);
 
-    // Ask for cookie consent on first load
+    // On mount, load saved consent preference (if any) so we don't prompt repeatedly
+    React.useEffect(() => {
+        const consentCookie = document.cookie.split('; ').find(row => row.startsWith('chainConsent='));
+        if (consentCookie) {
+            const val = consentCookie.split('=')[1];
+            setCookieConsent(val === 'true');
+            setShowCookieInfo(false);
+        } else {
+            // no saved preference, show the prompt
+            setCookieConsent(null);
+            setShowCookieInfo(true);
+        }
+    }, []);
+
+    // If cookieConsent becomes null later, ensure prompt is visible
     React.useEffect(() => {
         if (cookieConsent === null) {
             setShowCookieInfo(true);
@@ -361,7 +375,7 @@ function LandingPage() {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={() => { setCookieConsent(true); setShowCookieInfo(false); }}>Accept Cookies</Button>
+                        <Button variant="primary" onClick={() => { document.cookie = 'chainConsent=true; path=/; max-age=31536000'; setCookieConsent(true); setShowCookieInfo(false); }}>Accept Cookies</Button>
                         <Button variant="outline-secondary" onClick={() => { setCookieConsent(false); setShowCookieInfo(false); }}>Decline</Button>
                     </Modal.Footer>
                 </Modal>
