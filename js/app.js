@@ -49,6 +49,7 @@ function LandingPage() {
     const [aiBotEnabled, setAiBotEnabled] = React.useState(false);
     const [cookieConsent, setCookieConsent] = React.useState(null); // null: not asked, true: accepted, false: declined
     const [showCookieInfo, setShowCookieInfo] = React.useState(false);
+    const [showMenu, setShowMenu] = React.useState(false);
 
     function appendDebug(msg) {
         const ts = new Date().toISOString().slice(11, 23); // HH:MM:SS.mmm
@@ -380,6 +381,77 @@ function LandingPage() {
                     </Modal.Footer>
                 </Modal>
             )}
+            {/* Hamburger menu button */}
+            <div
+                style={{
+                    position: 'fixed',
+                    top: 16,
+                    right: 16,
+                    zIndex: 1100,
+                    width: 48,
+                    height: 48,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(255,255,255,0.85)',
+                    borderRadius: '50%',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                    border: '1px solid #eee',
+                    touchAction: 'manipulation',
+                }}
+            >
+                <Button
+                    variant="outline-dark"
+                    size="sm"
+                    onClick={() => setShowMenu(show => !show)}
+                    style={{ borderRadius: '50%', padding: 8, background: 'transparent', border: 'none' }}
+                    aria-label="Menu"
+                >
+                    {/* Hamburger icon */}
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect y="6" width="28" height="3" rx="1.5" fill="#333"/>
+                        <rect y="13" width="28" height="3" rx="1.5" fill="#333"/>
+                        <rect y="20" width="28" height="3" rx="1.5" fill="#333"/>
+                    </svg>
+                </Button>
+            </div>
+            {/* Overlay menu layer */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(4px)',
+                    zIndex: 1000,
+                    display: showMenu ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'opacity 0.3s',
+                }}
+            >
+                <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                    Settings
+                </Button>
+                <Button variant="outline-light" size="lg" onClick={() => { setShowHelp(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                    Help
+                </Button>
+                <Button variant="outline-danger" size="lg" onClick={handleResetGame} style={{ width: '80%' }}>
+                    Reset Game
+                </Button>
+                <Button
+                    variant={aiBotEnabled ? "success" : "outline-secondary"}
+                    size="lg"
+                    onClick={() => setAiBotEnabled(v => !v)}
+                    style={{ width: '80%', marginTop: 16, boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
+                    aria-label="Toggle AI Bot"
+                >
+                    {aiBotEnabled ? 'AI Bot ON' : 'AI Bot OFF'}
+                </Button>
+            </div>
             <div style={{
                 position: 'relative',
                 display: 'inline-block',
@@ -403,37 +475,6 @@ function LandingPage() {
                         {gridRows}
                     </div>
                 </div>
-            </div>
-            <div style={{ position: 'fixed', top: 24, right: 32, zIndex: 1000, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <Button variant="outline-primary" size="sm" onClick={() => setShowSettings(true)} style={{ borderRadius: '50%', padding: 8, marginBottom: 8 }} aria-label="Settings">
-                    <i className="fa fa-cog" style={{ fontSize: 20 }}></i>
-                </Button>
-                <Button variant="outline-info" size="sm" onClick={() => setShowHelp(true)} style={{ borderRadius: '50%', padding: 8, marginBottom: 8 }} aria-label="Help">
-                    <i className="fa fa-question" style={{ fontSize: 20 }}></i>
-                </Button>
-                <Button variant="outline-danger" size="sm" onClick={handleResetGame} style={{ borderRadius: '50%', padding: 8, marginBottom: 8 }} aria-label="Reset">
-                    {/* SVG recycle icon for reset */}
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6.5 3.5C8.5 2 13.5 2 15.5 5.5M15.5 5.5L13.5 5.5M15.5 5.5L15.5 3.5" stroke="#d9534f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M15.5 18.5C13.5 20 8.5 20 6.5 16.5M6.5 16.5L8.5 16.5M6.5 16.5L6.5 18.5" stroke="#d9534f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M3.5 11C3.5 7.5 7.5 3.5 11 3.5M18.5 11C18.5 14.5 14.5 18.5 11 18.5" stroke="#d9534f" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                </Button>
-                <Button
-                    variant={aiBotEnabled ? "success" : "outline-secondary"}
-                    size="sm"
-                    onClick={() => setAiBotEnabled(v => !v)}
-                    style={{ borderRadius: '50%', padding: 8, marginTop: 4, boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
-                    aria-label="Toggle AI Bot"
-                >
-                    {/* Computer SVG icon */}
-                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: 6, verticalAlign: 'middle' }}>
-                        <rect x="3" y="5" width="16" height="10" rx="2" stroke={aiBotEnabled ? "#5bc0de" : "#888"} strokeWidth="2" fill={aiBotEnabled ? "#e6f7ff" : "#fff"}/>
-                        <rect x="7" y="16" width="8" height="2" rx="1" fill={aiBotEnabled ? "#5bc0de" : "#bbb"}/>
-                        <circle cx="11" cy="10" r="2" fill={aiBotEnabled ? "#5bc0de" : "#bbb"}/>
-                    </svg>
-                    <span style={{ fontWeight: 500, color: aiBotEnabled ? '#5bc0de' : '#888' }}>{aiBotEnabled ? 'AI Bot ON' : 'AI Bot OFF'}</span>
-                </Button>
             </div>
             {/* Remove player turn text */}
             {showDebug && (
