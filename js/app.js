@@ -417,7 +417,14 @@ function LandingPage() {
                 <Button
                     variant="outline-dark"
                     size="sm"
-                    onClick={() => setShowMenu(show => !show)}
+                    onClick={() => {
+                        if (showMenu) {
+                            // Only close if no modal is open
+                            if (!showSettings && !showHelp) setShowMenu(false);
+                        } else {
+                            if (!showSettings && !showHelp) setShowMenu(true);
+                        }
+                    }}
                     style={{ borderRadius: '50%', padding: 8, background: 'transparent', border: 'none' }}
                     aria-label="Menu"
                 >
@@ -446,6 +453,9 @@ function LandingPage() {
                     justifyContent: 'center',
                     transition: 'opacity 0.3s',
                 }}
+                onClick={() => {
+                    if (!showSettings && !showHelp) setShowMenu(false);
+                }}
             >
                 <div
                     style={{
@@ -456,6 +466,7 @@ function LandingPage() {
                         alignItems: 'center',
                         justifyContent: 'center',
                     }}
+                    onClick={e => e.stopPropagation()}
                 >
                     <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%', maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center' }}>
                         Settings
