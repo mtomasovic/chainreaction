@@ -233,9 +233,7 @@ function LandingPage() {
 
     // Reset game state and cookie
     function handleResetGame() {
-        setGridSize(4);
-        setPendingGridSize(4);
-        setFilled(Array(4 * 4).fill(null).map(() => Array(4).fill(null)));
+        setFilled(Array(gridSize * gridSize).fill(null).map(() => Array(4).fill(null)));
         setPlayer('red');
         setAnimateIdx(null);
         setDebugLog([]);
@@ -247,24 +245,40 @@ function LandingPage() {
         document.cookie = 'chainGame=; path=/; max-age=0'; // delete cookie
     }
 
-    // Set fixed box size and remove spacing between boxes
-    const boxSize = 90; // increased from 70 for better centering
-    const gapPx = 0; // no vertical gap
-    const gapH = 0; // no horizontal gap
-    const gridBgColor = player === 'red' ? 'rgba(255,0,0,0.12)' : 'rgba(0,0,255,0.12)'; // semi-transparent background
-    const gridWidth = gridSize * boxSize + (gridSize - 1) * gapH + 12; // 12px extra for effect
-    const gridHeight = gridSize * boxSize + (gridSize - 1) * gapPx + 12; // 12px extra for effect
+    // Responsive box size calculation for mobile: ensure grid fits viewport
+    const [boxSize, setBoxSize] = React.useState(90); // default
+    React.useEffect(() => {
+        function updateBoxSize() {
+            // Padding for UI (hamburger, modals, etc)
+            const paddingW = 32 + 16; // left/right + fudge
+            const paddingH = 160; // top/bottom + fudge for menu/buttons
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            // Calculate max box size to fit grid in viewport
+            const maxW = Math.floor((vw - paddingW) / gridSize);
+            const maxH = Math.floor((vh - paddingH) / gridSize);
+            const size = Math.max(32, Math.min(maxW, maxH, 90)); // min 32px, max 90px
+            setBoxSize(size);
+        }
+        updateBoxSize();
+        window.addEventListener('resize', updateBoxSize);
+        window.addEventListener('orientationchange', updateBoxSize);
+        return () => {
+            window.removeEventListener('resize', updateBoxSize);
+            window.removeEventListener('orientationchange', updateBoxSize);
+        };
+    }, [gridSize]);
+
     // Calculate grid dimensions
-    const gridPixelSize = gridSize * boxSize + (gridSize - 1) * gapPx;
     const gridBgPadding = 18; // how much larger than grid (px)
     const gridRows = [];
     for (let r = 0; r < gridSize; r++) {
         gridRows.push(
-            <Row key={r} className="justify-content-center" style={{ marginTop: r === 0 ? gapPx : 0, marginBottom: gapPx }}>
+            <Row key={r} className="justify-content-center" style={{ marginTop: r === 0 ? 0 : 0, marginBottom: 0 }}>
                 {Array.from({ length: gridSize }, (_, c) => {
                     const i = r * gridSize + c;
                     return (
-                        <Col key={i} className="d-flex justify-content-center" style={{ paddingLeft: gapH, paddingRight: gapH, maxWidth: boxSize }}>
+                        <Col key={i} className="d-flex justify-content-center" style={{ paddingLeft: 0, paddingRight: 0, maxWidth: boxSize }}>
                             <Card
                                 onClick={() => handleClick(i)}
                                 style={{
@@ -433,24 +447,26 @@ function LandingPage() {
                     transition: 'opacity 0.3s',
                 }}
             >
-                <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%' }}>
-                    Settings
-                </Button>
-                <Button variant="outline-light" size="lg" onClick={() => { setShowHelp(true); }} style={{ marginBottom: 16, width: '80%' }}>
-                    Help
-                </Button>
-                <Button variant="outline-danger" size="lg" onClick={handleResetGame} style={{ width: '80%' }}>
-                    Reset Game
-                </Button>
-                <Button
-                    variant={aiBotEnabled ? "success" : "outline-secondary"}
-                    size="lg"
-                    onClick={() => setAiBotEnabled(v => !v)}
-                    style={{ width: '80%', marginTop: 16, boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
-                    aria-label="Toggle AI Bot"
-                >
-                    {aiBotEnabled ? 'AI Bot ON' : 'AI Bot OFF'}
-                </Button>
+                <div style={{ width: '100%', maxWidth: 400 }}>
+                    <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                        Settings
+                    </Button>
+                    <Button variant="outline-light" size="lg" onClick={() => { setShowHelp(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                        Help
+                    </Button>
+                    <Button variant="outline-danger" size="lg" onClick={handleResetGame} style={{ width: '80%' }}>
+                        Reset Game
+                    </Button>
+                    <Button
+                        variant={aiBotEnabled ? "success" : "outline-secondary"}
+                        size="lg"
+                        onClick={() => setAiBotEnabled(v => !v)}
+                        style={{ width: '80%', marginTop: 16, boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
+                        aria-label="Toggle AI Bot"
+                    >
+                        {aiBotEnabled ? 'AI Bot ON' : 'AI Bot OFF'}
+                    </Button>
+                </div>
             </div>
             <div style={{
                 position: 'relative',
@@ -462,16 +478,16 @@ function LandingPage() {
                     position: 'absolute',
                     top: -gridBgPadding,
                     left: -gridBgPadding,
-                    width: gridPixelSize + gridBgPadding * 2,
-                    height: gridPixelSize + gridBgPadding * 2,
+                    width: gridSize * boxSize + gridBgPadding * 2,
+                    height: gridSize * boxSize + gridBgPadding * 2,
                     zIndex: 0,
                     pointerEvents: 'none',
-                    background: gridBgColor,
+                    background: player === 'red' ? 'rgba(255,0,0,0.12)' : 'rgba(0,0,255,0.12)', // semi-transparent background
                     borderRadius: 24,
                     transition: 'background 0.4s',
                 }} />
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div style={{ width: gridPixelSize, margin: '0 auto' }}>
+                    <div style={{ width: gridSize * boxSize, margin: '0 auto', maxWidth: '100vw', maxHeight: '100vh', overflow: 'hidden' }}>
                         {gridRows}
                     </div>
                 </div>
