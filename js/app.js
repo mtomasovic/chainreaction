@@ -447,21 +447,30 @@ function LandingPage() {
                     transition: 'opacity 0.3s',
                 }}
             >
-                <div style={{ width: '100%', maxWidth: 400 }}>
-                    <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                <div
+                    style={{
+                        width: '100%',
+                        maxWidth: 400,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%', maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center' }}>
                         Settings
                     </Button>
-                    <Button variant="outline-light" size="lg" onClick={() => { setShowHelp(true); }} style={{ marginBottom: 16, width: '80%' }}>
+                    <Button variant="outline-light" size="lg" onClick={() => { setShowHelp(true); }} style={{ marginBottom: 16, width: '80%', maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center' }}>
                         Help
                     </Button>
-                    <Button variant="outline-danger" size="lg" onClick={handleResetGame} style={{ width: '80%' }}>
+                    <Button variant="outline-danger" size="lg" onClick={handleResetGame} style={{ width: '80%', maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center' }}>
                         Reset Game
                     </Button>
                     <Button
                         variant={aiBotEnabled ? "success" : "outline-secondary"}
                         size="lg"
                         onClick={() => setAiBotEnabled(v => !v)}
-                        style={{ width: '80%', marginTop: 16, boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
+                        style={{ width: '80%', marginTop: 16, maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center', boxShadow: aiBotEnabled ? '0 0 8px 2px #5bc0de' : undefined }}
                         aria-label="Toggle AI Bot"
                     >
                         {aiBotEnabled ? 'AI Bot ON' : 'AI Bot OFF'}
