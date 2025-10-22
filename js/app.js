@@ -409,7 +409,7 @@ function LandingPage() {
             <div
                 style={{
                     position: 'fixed',
-                    top: 16,
+                    top: 4, // moved up from 16px to 4px
                     right: 16,
                     zIndex: 1100,
                     width: 48,
