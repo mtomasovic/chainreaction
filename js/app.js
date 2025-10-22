@@ -604,46 +604,40 @@ function LandingPage() {
 
 function botChooseMove(filled, gridSize) {
     // For each possible move, simulate the outcome and score
-    let bestIdx = null;
     let bestScore = -Infinity;
-    let bestReason = "";
+    let bestMoves = [];
     for (let i = 0; i < filled.length; i++) {
         const nextCircle = filled[i].findIndex(v => v === null);
         if (nextCircle !== -1) {
             // Simulate filling this box
             const testFilled = filled.map(arr => [...arr]);
             testFilled[i][nextCircle] = 'blue';
-            // If this would fill the box, check for chain reaction
+            let simulated, blueCount, redCount, score, reason;
             if (testFilled[i].every(v => v !== null)) {
-                // Simulate chain reaction
-                const simulated = simulateChainReaction(testFilled, i, 'blue', gridSize);
-                const blueCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'blue').length, 0);
-                const redCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'red').length, 0);
-                const score = blueCount - redCount;
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestIdx = i;
-                    bestReason = `Bot chooses box ${i} to trigger a chain reaction and maximize blue circles (score: ${score}).`;
-                }
+                simulated = simulateChainReaction(testFilled, i, 'blue', gridSize);
+                blueCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'blue').length, 0);
+                redCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'red').length, 0);
+                score = blueCount - redCount;
+                reason = `Bot chooses box ${i} to trigger a chain reaction and maximize blue circles (score: ${score}).`;
             } else {
-                // Not last spot, just simulate placing
-                const simulated = testFilled;
-                const blueCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'blue').length, 0);
-                const redCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'red').length, 0);
-                const score = blueCount - redCount;
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestIdx = i;
-                    bestReason = `Bot chooses box ${i} to maximize blue circles (score: ${score}).`;
-                }
+                simulated = testFilled;
+                blueCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'blue').length, 0);
+                redCount = simulated.reduce((acc, box) => acc + box.filter(v => v === 'red').length, 0);
+                score = blueCount - redCount;
+                reason = `Bot chooses box ${i} to maximize blue circles (score: ${score}).`;
+            }
+            if (score > bestScore) {
+                bestScore = score;
+                bestMoves = [{ idx: i, reason }];
+            } else if (score === bestScore) {
+                bestMoves.push({ idx: i, reason });
             }
         }
     }
-    if (bestIdx !== null) {
-        return {
-            idx: bestIdx,
-            reason: bestReason
-        };
+    if (bestMoves.length > 0) {
+        // Pick a random best move
+        const choice = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        return choice;
     }
     return null;
 }
