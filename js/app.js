@@ -439,11 +439,11 @@ function LandingPage() {
             {/* Overlay menu layer */}
             <div
                 style={{
-                    position: 'absolute',
+                    position: 'fixed', // ensure overlay covers the whole viewport
                     top: 0,
                     left: 0,
-                    width: '100%',
-                    height: '100%',
+                    width: '100vw',
+                    height: '100vh',
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     backdropFilter: 'blur(4px)',
                     zIndex: 1000,
@@ -453,20 +453,26 @@ function LandingPage() {
                     justifyContent: 'center',
                     transition: 'opacity 0.3s',
                 }}
-                onClick={() => {
-                    if (!showSettings && !showHelp) setShowMenu(false);
+                onMouseDown={e => {
+                    // Only close if no other modal is open and click is outside the menu content
+                    // Use event target to ensure only clicks outside the menu content close the menu
+                    if (e.target === e.currentTarget && !showSettings && !showHelp) setShowMenu(false);
                 }}
             >
                 <div
                     style={{
-                        width: '100%',
+                        width: '90vw',
                         maxWidth: 400,
+                        margin: '40px auto',
+                        background: 'rgba(30,30,30,0.95)',
+                        borderRadius: 18,
+                        boxShadow: '0 4px 32px rgba(0,0,0,0.25)',
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
+                        padding: 24,
                     }}
-                    onClick={e => e.stopPropagation()}
                 >
                     <Button variant="outline-light" size="lg" onClick={() => { setShowSettings(true); }} style={{ marginBottom: 16, width: '80%', maxWidth: 320, minWidth: 180, textAlign: 'center', alignSelf: 'center' }}>
                         Settings
