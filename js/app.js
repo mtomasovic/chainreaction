@@ -570,11 +570,15 @@ function LandingPage() {
                         &nbsp;&nbsp;• This can trigger further chain reactions.<br />
                         - The game ends when all cells are full.<br />
                         - The winner is the player with the most circles of their color.<br /><br />
-                        <strong>Settings & Features:</strong><br />
-                        - You can change the grid size and toggle the AI bot in the settings.<br />
-                        - The <span style={{color:'#d9534f'}}><b>recycle</b></span> button resets the game and clears all progress.<br />
-                        - Game progress (grid, turn, settings) is automatically saved in a cookie, so you can resume after reloading.<br /><br />
-                        <strong>Tip:</strong> Try to trigger chain reactions to convert more cells to your color!
+                        <strong>Menu & Features:</strong><br />
+                        - Tap the <b>☰</b> (hamburger) button in the top right to open the menu.<br />
+                        - <b>Settings</b>: Change the grid size (2-10).<br />
+                        - <b>Help</b>: Show these instructions.<br />
+                        - <b>Reset Game</b>: Clears all progress and starts a new game.<br />
+                        - <b>AI Bot ON/OFF</b>: Toggle the AI bot. When ON, the blue player is controlled by the computer.<br />
+                        - The menu closes if you tap anywhere outside the menu area, unless Settings or Help is open.<br />
+                        - Game progress (grid, turn, settings, AI bot) is automatically saved in a cookie, so you can resume after reloading (if you accepted cookies).<br /><br />
+                        <strong>Tip:</strong> Try to trigger chain reactions to convert more cells to your color!<br />
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
