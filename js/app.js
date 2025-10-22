@@ -515,11 +515,11 @@ function LandingPage() {
                     top: -gridBgPadding,
                     left: -gridBgPadding,
                     width: gridSize * boxSize + gridBgPadding * 2,
-                    height: gridSize * boxSize + gridBgPadding * 2,
+                    height: gridSize * boxSize + gridBgPadding * 2 + 6, // only a tiny bit extra at bottom
                     zIndex: 0,
                     pointerEvents: 'none',
-                    background: player === 'red' ? 'rgba(255,0,0,0.12)' : 'rgba(0,0,255,0.12)', // semi-transparent background
-                    borderRadius: 24,
+                    background: player === 'red' ? 'rgba(255,0,0,0.12)' : 'rgba(0,0,255,0.12)',
+                    borderRadius: `${gridBgPadding}px ${gridBgPadding}px ${gridBgPadding + 6}px ${gridBgPadding + 6}px`, // slightly larger bottom radius
                     transition: 'background 0.4s',
                 }} />
                 <div style={{ position: 'relative', zIndex: 1 }}>
