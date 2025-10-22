@@ -50,6 +50,7 @@ function LandingPage() {
     const [cookieConsent, setCookieConsent] = React.useState(null); // null: not asked, true: accepted, false: declined
     const [showCookieInfo, setShowCookieInfo] = React.useState(false);
     const [showMenu, setShowMenu] = React.useState(false);
+    const [settingsError, setSettingsError] = React.useState("");
 
     function appendDebug(msg) {
         const ts = new Date().toISOString().slice(11, 23); // HH:MM:SS.mmm
@@ -222,13 +223,22 @@ function LandingPage() {
 
     // Handle grid size change
     const handleApplyGridSize = () => {
-        const size = Math.max(2, Math.min(10, parseInt(pendingGridSize)));
+        const size = parseInt(pendingGridSize);
+        if (isNaN(size) || size < 2) {
+            setSettingsError("Minimum grid size is 2.");
+            return;
+        }
+        if (size > 10) {
+            setSettingsError("Maximum grid size is 10.");
+            return;
+        }
         setGridSize(size);
         setFilled(Array(size * size).fill(null).map(() => Array(4).fill(null)));
         setPlayer('red');
         setAnimateIdx(null);
         setDebugLog([]);
         setWinner(null);
+        setSettingsError("");
     };
 
     // Reset game state and cookie
@@ -536,7 +546,7 @@ function LandingPage() {
                     <Button variant="primary" onClick={() => setWinner(null)}>Close</Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showSettings} onHide={() => setShowSettings(false)} centered>
+            <Modal show={showSettings} onHide={() => { setShowSettings(false); setSettingsError(""); }} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Settings</Modal.Title>
                 </Modal.Header>
@@ -553,6 +563,9 @@ function LandingPage() {
                         />
                         <Button variant="primary" size="sm" onClick={handleApplyGridSize} style={{ marginLeft: 8 }}>Apply</Button>
                     </Form>
+                    {settingsError && (
+                        <div style={{ color: '#d9534f', marginTop: 8, fontWeight: 'bold', fontSize: 15 }}>{settingsError}</div>
+                    )}
                 </Modal.Body>
             </Modal>
             <Modal show={showHelp} onHide={() => setShowHelp(false)} centered>
